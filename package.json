@@ -1,8 +1,8 @@
 {
   "name": "react-qiniu-plupload",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "description": "React plugin for qiniu plupload",
-  "main": "src/Qiniu-Plupload.js",
+  "main": "lib/Qiniu-Plupload.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "babel-node ./tools/buildBabel.js"
