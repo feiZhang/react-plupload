@@ -1,7 +1,6 @@
 import _ from 'lodash';
 import React from 'react';
-import browseButton from './BrowseButton';
-import uploadButton from './UploadButton';
+import { Button,Progress,Icon } from 'antd'
 
 let count = 0;
 const EVENTS = [
@@ -44,9 +43,9 @@ module.exports = React.createFactory(React.createClass({
   },
 
   runUploader() {
+    console.log(2323,'runuploader')
     const self = this;
     this.initUploader();
-    this.uploader.init();
 
     EVENTS.forEach(function(event) {
       const handler = self.props['on' + event];
@@ -156,6 +155,7 @@ module.exports = React.createFactory(React.createClass({
   },
 
   initUploader() {
+    console.log(111,this.props);
     this.uploader = Qiniu.uploader(_.extend({
       container:  'container' + this.id,
       runtimes: 'html5',
@@ -166,9 +166,10 @@ module.exports = React.createFactory(React.createClass({
       url: '/upload',
       flash_swf_url: '/plupload-2.1.8/js/Moxie.swf',
       get_new_uptoken: false,
-      auto_start: true,
       log_level: 5,
-      unique_names: true
+      unique_names: false,
+      save_key: true,
+      init:{}
     }, this.props));
   },
 
@@ -183,24 +184,13 @@ module.exports = React.createFactory(React.createClass({
       };
       let delButton = '';
       if (self.state.uploadState === false && val.uploaded !== true) {
-        delButton = React.createElement('button', {onClick: removeFile, className: 'pull-right'}, 'X');
+        delButton = <Icon type="delete" onClick={removeFile} />
       }
 
       let progressBar = '';
       if (self.state.uploadState === true && val.uploaded !== true && _.isUndefined(val.error)) {
         const percent = self.state.progress[val.id] || 0;
-        progressBar = React.createElement('div', {className: 'progress'},
-          React.createElement('div', {
-            className: 'progress-bar',
-            role: 'progressbar',
-            'aria-valuenow': percent,
-            'aria-valuemin': 0,
-            'aria-valuemax': 100,
-            style: {width: percent + '%'}
-          },
-            React.createElement('span', {className: 'sr-only'}, percent + 'complete')
-          )
-        );
+        progressBar = <Progress percent={percent} status="active" />
       }
 
       let errorDiv = '';
@@ -247,25 +237,12 @@ module.exports = React.createFactory(React.createClass({
   },
 
   render() {
-    const propsSelect = {
-      id: this.getComponentId(),
-      type: 'button',
-      content: this.props.buttonSelect || 'Browse'
-    };
-
-    const propsUpload = {
-      onClick: this.doUpload,
-      type: 'button',
-      content: this.props.buttonUpload || 'Upload'
-    };
-    if (this.state.files.length === 0) propsUpload.disabled = 'disabled';
-
     const list = this.list();
-
+    const liulanId = this.getComponentId();
+    const liulanTitle = this.props.buttonSelect || 'Browse';
     return React.createElement('div', {className: 'my-list', id: 'container' + this.id},
       React.createElement('ul', {className: 'list-unstyled'}, list),
-      browseButton(propsSelect),
-      uploadButton(propsUpload)
+      <Button id={liulanId}>{liulanTitle}</Button>
     );
   }
 }));
